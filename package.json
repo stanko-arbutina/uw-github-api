@@ -7,12 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "PRIVATE",
   "private": true,
   "dependencies": {
     "axios": "^0.19.0",
     "dotenv": "^8.1.0",
     "lodash": "^4.17.15",
     "yargs": "^14.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.5.1"
   }
 }
