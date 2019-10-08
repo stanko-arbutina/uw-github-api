@@ -1,0 +1,12 @@
+{
+  "name": "fetch_gitub_data",
+  "version": "0.0.1",
+  "description": "Fetch data for users which have starred a certain repo",
+  "main": "fetch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "private":  true
+}
