@@ -2,6 +2,13 @@ require('dotenv').config();
 const { range, pick } = require('lodash');
 const axios = require('axios');
 
+const argv = require('yargs')
+    .usage('Usage: $0 <owner> <repo>')
+    .demandCommand(2)
+    .argv;
+const [OWNER, REPO] = argv._;
+
+
 const stargazersURL = (owner, repo, page) => `https://api.github.com/repos/${owner}/${repo}/stargazers?page=${page}`;
 const ACCEPT_HEADER = {Accept: 'application/vnd.github.v3.star+json'};
 
@@ -11,9 +18,6 @@ const CONFIG = {
     token: process.env.GITHUB_TOKEN,
     username: process.env.GITHUB_USERNAME
 };
-
-const OWNER = 'request';
-const REPO = 'request';
 const AUTH_OPTIONS = {auth: {username: CONFIG.username, password: CONFIG.token}};
 
 async function request(url, options){
@@ -36,8 +40,9 @@ function extractTotalPages(link){
 function joinLine(arr){
     return arr.join("\t");
 }
+const maybeNotAvailable = str => str || 'N/A';
 function formatResult(result){
-    console.log(joinLine([result.login, result.email, result.location, result.name, result.starred_at]));
+    return joinLine([result.login, result.email, result.location, result.name, result.starred_at].map(maybeNotAvailable));
 }
 
 async function processStargazers(data){
@@ -45,10 +50,8 @@ async function processStargazers(data){
         const response  =await request(userData.user.url, AUTH_OPTIONS);
         const result = {...pick(response.data, ['email', 'name', 'location', 'login']), starred_at: userData.starred_at};
         console.log(formatResult(result));
-        throw 'Done!';
     }
 }
-
 
 
 async function main(){
@@ -64,7 +67,7 @@ async function main(){
             if (response.headers.link) {
                 const totalPages = extractTotalPages(response.headers.link);
                 if (totalPages) {
-                    const lower = 2, upper = Math.min(totalPages + 1, 3);
+                    const lower = 2, upper = totalPages + 1;
                     to_process = [
                         ...to_process,
                         ...range(lower, upper).map(
@@ -81,4 +84,9 @@ async function main(){
 }
 
 
-main().then(() => process.exit(0));
+main().then(
+    () => process.exit(0),
+    error => {
+        console.error(error.toString ? error.toString() : error);
+    }
+);
