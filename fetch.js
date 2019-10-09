@@ -6,7 +6,6 @@ const argv = require('yargs')
     .usage('Usage: $0 <owner> <repo> [options]')
     .alias('s', 'start')
     .describe('s', 'start page')
-
     .demandCommand(2)
     .argv;
 const [OWNER, REPO] = argv._;
@@ -14,8 +13,6 @@ const START_PAGE = argv.start || 1;
 
 const stargazersURL = (owner, repo, page) => `https://api.github.com/repos/${owner}/${repo}/stargazers?page=${page}`;
 const ACCEPT_HEADER = {Accept: 'application/vnd.github.v3.star+json'};
-
-const log = (...args) => console.error.apply(console, args);
 
 const CONFIG = {
     token: process.env.GITHUB_TOKEN,

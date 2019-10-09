@@ -4,7 +4,7 @@
   "description": "Fetch data for users which have starred a certain repo",
   "main": "fetch.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "./node_modules/.bin/eslint **/*.js"
   },
   "author": "",
   "license": "PRIVATE",
