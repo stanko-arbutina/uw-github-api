@@ -6,6 +6,6 @@ Install dependencies with
 
 Copy `.env.example` to `.env` and update configuration variables.
 
-##Lint
+## Lint
 
 `npm run lint`
