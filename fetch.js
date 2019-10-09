@@ -3,11 +3,14 @@ const { range, pick } = require('lodash');
 const axios = require('axios');
 
 const argv = require('yargs')
-    .usage('Usage: $0 <owner> <repo>')
+    .usage('Usage: $0 <owner> <repo> [options]')
+    .alias('s', 'start')
+    .describe('s', 'start page')
+
     .demandCommand(2)
     .argv;
 const [OWNER, REPO] = argv._;
-
+const START_PAGE = argv.start || 1;
 
 const stargazersURL = (owner, repo, page) => `https://api.github.com/repos/${owner}/${repo}/stargazers?page=${page}`;
 const ACCEPT_HEADER = {Accept: 'application/vnd.github.v3.star+json'};
@@ -57,7 +60,7 @@ async function processStargazers(data){
 async function main(){
     let parsedPages = false;
     let to_process = [
-        stargazersURL(OWNER, REPO, 1)
+        stargazersURL(OWNER, REPO, START_PAGE)
     ];
 
     while (to_process.length) {
@@ -66,8 +69,8 @@ async function main(){
         if (!parsedPages) {
             if (response.headers.link) {
                 const totalPages = extractTotalPages(response.headers.link);
-                if (totalPages) {
-                    const lower = 2, upper = totalPages + 1;
+                if (totalPages && (totalPages > START_PAGE)) {
+                    const lower = START_PAGE + 1, upper = totalPages + 1;
                     to_process = [
                         ...to_process,
                         ...range(lower, upper).map(
